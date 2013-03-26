@@ -8,6 +8,9 @@ import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import com.voyagegames.logic3d.localization.StringLookup_EN;
+import com.voyagegames.logic3d.models.StringLookup;
+
 public class Common {
 	
 	private static final String TAG = Common.class.getName();
@@ -49,6 +52,14 @@ public class Common {
     
     public static boolean isValid(final String value) {
     	return (value != null && value.length() > 0);
+    }
+    
+    public static StringLookup getStringLookup(final String language) {
+    	if (language.equals("en")) {
+    		return new StringLookup_EN();
+    	}
+    	
+    	return null;
     }
 
 }

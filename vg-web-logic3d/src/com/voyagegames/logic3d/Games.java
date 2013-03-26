@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -44,10 +43,26 @@ public class Games {
 	public static List<Entity> getGamesInProgress(final String player) {
 		final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		final Filter filter = new CompositeFilter(CompositeFilterOperator.AND, Arrays.<Filter>asList(
+				new FilterPredicate(COMPLETED_FIELD, FilterOperator.EQUAL, false),
 				new CompositeFilter(CompositeFilterOperator.OR, Arrays.<Filter>asList(
 					new FilterPredicate(PLAYER_1_FIELD, FilterOperator.EQUAL, player),
-					new FilterPredicate(PLAYER_2_FIELD, FilterOperator.EQUAL, player))),
-				new FilterPredicate(COMPLETED_FIELD, FilterOperator.EQUAL, false)));
+					new FilterPredicate(PLAYER_2_FIELD, FilterOperator.EQUAL, player)))));
+		final Query query = new Query(TABLE_NAME).setFilter(filter);
+	    
+		return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+	}
+	
+	public static List<Entity> getGamesInProgress(final String player, final String opponent) {
+		final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		final Filter filter = new CompositeFilter(CompositeFilterOperator.AND, Arrays.<Filter>asList(
+				new FilterPredicate(COMPLETED_FIELD, FilterOperator.EQUAL, false),
+				new CompositeFilter(CompositeFilterOperator.OR, Arrays.<Filter>asList(
+					new CompositeFilter(CompositeFilterOperator.AND, Arrays.<Filter>asList(
+							new FilterPredicate(PLAYER_1_FIELD, FilterOperator.EQUAL, player),
+							new FilterPredicate(PLAYER_2_FIELD, FilterOperator.EQUAL, opponent))),
+					new CompositeFilter(CompositeFilterOperator.AND, Arrays.<Filter>asList(
+							new FilterPredicate(PLAYER_1_FIELD, FilterOperator.EQUAL, opponent),
+							new FilterPredicate(PLAYER_2_FIELD, FilterOperator.EQUAL, player)))))));
 		final Query query = new Query(TABLE_NAME).setFilter(filter);
 	    
 		return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
@@ -65,29 +80,24 @@ public class Games {
 		return datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
 	}
 	
-	public static Entity startGame(final String player1, final String player2, final GameConfig config) {
+	public static Entity startGame(
+			final String player1,
+			final String player2,
+			final GameConfig config,
+			final String playerTurn) {
 		if (player1.equals(player2)) {
 			return null;
 		}
 		
-		final List<Entity> player1Games = getGames(player1);
+		final List<Entity> gamesInProgress = getGamesInProgress(player1, player2);
 		
-		for (final Entity e : player1Games) {
-			final String p1 = (String)e.getProperty(PLAYER_1_FIELD);
-			final String p2 = (String)e.getProperty(PLAYER_2_FIELD);
-			final boolean c = (Boolean)e.getProperty(COMPLETED_FIELD);
-			
-			if ((p1.equals(player2) || p2.equals(player2)) && !c) {
-				return null;
-			}
+		if (gamesInProgress.size() > 0) {
+			return null;
 		}
 
 		final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		final Entity entity = new Entity(TABLE_NAME);
 		final Date now = new Date();
-		final Random rand = new Random();
-		final int randTurnNum = rand.nextInt(1);
-		final String randTurn = randTurnNum == 0 ? player1 : player2;
 
 		entity.setProperty(DATE_FIELD, now);
 		entity.setProperty(LAST_PLAY_FIELD, now);
@@ -96,7 +106,7 @@ public class Games {
 		entity.setProperty(COMPLETED_FIELD, false);
 		entity.setProperty(CONFIG_FIELD, config);
 		entity.setProperty(PIECES_FIELD, new ArrayList<PieceIndex>());
-		entity.setProperty(TURN_FIELD, randTurn);
+		entity.setProperty(TURN_FIELD, playerTurn);
 		datastore.put(entity);
 		return entity;
 	}

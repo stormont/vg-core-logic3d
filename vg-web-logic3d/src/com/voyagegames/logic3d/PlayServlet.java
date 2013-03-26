@@ -20,7 +20,7 @@ public class PlayServlet extends AbstractLoggingServlet {
 			log(TAG, PATH + " POST");
 
 			// TODO
-			failureResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, TAG, "Not implemented");
+			failureResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, TAG, "Not implemented");
 		} catch (final Exception e) {
 			serverError(resp, TAG, PATH + " failed", e);
 		}
