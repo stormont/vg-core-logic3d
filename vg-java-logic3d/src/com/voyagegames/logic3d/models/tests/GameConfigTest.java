@@ -1,12 +1,12 @@
-package com.voyagegames.java.logic3d.models.tests;
+package com.voyagegames.logic3d.models.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.voyagegames.java.logic3d.models.Common;
-import com.voyagegames.java.logic3d.models.GameConfig;
+import com.voyagegames.logic3d.models.Common;
+import com.voyagegames.logic3d.models.GameConfig;
 
 public class GameConfigTest {
 

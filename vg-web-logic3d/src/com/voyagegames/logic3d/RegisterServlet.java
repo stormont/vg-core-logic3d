@@ -1,11 +1,11 @@
 package com.voyagegames.logic3d;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.voyagegames.logic3d.core.Common;
 import com.voyagegames.logic3d.core.Common.LogLevel;
 
 @SuppressWarnings("serial")
@@ -23,37 +23,25 @@ public class RegisterServlet extends AbstractLoggingServlet {
 			final String name = req.getParameter("name");
 			final String pass = req.getParameter("pass");
 			
-			if (name == null || pass == null) {
-				final String error = "Bad request";
-				final PrintWriter out = resp.getWriter();
-				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		        out.print(error);
-	    		logLevel = LogLevel.WARNING;
-				log(TAG, error);
+			if (!Common.isValid(name) || !Common.isValid(pass)) {
+				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Bad request");
 				return;
 			}
 
-		    if (Users.isUserRegistered(name)) {
-				final String error = "Request to register existing user";
-				final PrintWriter out = resp.getWriter();
-				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		        out.print(error);
-	    		logLevel = LogLevel.WARNING;
-				log(TAG, error);
+		    if (Users.getUser(name) != null) {
+				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Request to register existing user " + name);
 				return;
 		    }
 
-		    Users.registerUser(name, pass.getBytes());
+			final byte[] encrypted = Encryption.encrypt("Logic3D", pass.getBytes());
+
+		    Users.registerUser(name, encrypted);
 			resp.setStatus(HttpServletResponse.SC_OK);
-    		logLevel = LogLevel.WARNING;
+			
+    		logLevel = LogLevel.INFO;
 			log(TAG, "Registered new user " + name);
 		} catch (final Exception e) {
-    		logLevel = LogLevel.ERROR;
-    		log(TAG, PATH + " failed", e);
-			final PrintWriter out = resp.getWriter();
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	        out.print("Server error");
-    		logLevel = LogLevel.ERROR;
+			serverError(resp, TAG, PATH + " failed", e);
 		}
 	}
 	

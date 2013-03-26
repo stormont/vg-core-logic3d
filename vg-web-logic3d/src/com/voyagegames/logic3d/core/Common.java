@@ -46,5 +46,9 @@ public class Common {
         final ObjectInputStream o = new ObjectInputStream(b);
         return o.readObject();
     }
+    
+    public static boolean isValid(final String value) {
+    	return (value != null && value.length() > 0);
+    }
 
 }

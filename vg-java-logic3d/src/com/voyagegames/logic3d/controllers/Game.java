@@ -1,10 +1,10 @@
-package com.voyagegames.java.logic3d.controllers;
+package com.voyagegames.logic3d.controllers;
 
-import com.voyagegames.java.logic3d.models.GameCondition;
-import com.voyagegames.java.logic3d.models.GameState;
-import com.voyagegames.java.logic3d.models.PieceIndex;
-import com.voyagegames.java.logic3d.models.Player;
-import com.voyagegames.java.logic3d.models.Solution;
+import com.voyagegames.logic3d.models.GameCondition;
+import com.voyagegames.logic3d.models.GameState;
+import com.voyagegames.logic3d.models.PieceIndex;
+import com.voyagegames.logic3d.models.Player;
+import com.voyagegames.logic3d.models.Solution;
 
 public class Game {
 	

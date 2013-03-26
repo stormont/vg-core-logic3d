@@ -1,4 +1,4 @@
-package com.voyagegames.java.logic3d.models;
+package com.voyagegames.logic3d.models;
 
 import java.util.Map;
 

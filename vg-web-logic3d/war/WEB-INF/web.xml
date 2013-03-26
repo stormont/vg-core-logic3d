@@ -18,6 +18,46 @@
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/v1/login</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>Friend</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.FriendServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Friend</servlet-name>
+		<url-pattern>/v1/friend</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>CompletedGames</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.CompletedGamesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CompletedGames</servlet-name>
+		<url-pattern>/v1/completed</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>GamesInProgress</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.GamesInProgressServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GamesInProgress</servlet-name>
+		<url-pattern>/v1/inprogress</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Start</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.StartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Start</servlet-name>
+		<url-pattern>/v1/start</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Play</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.PlayServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Play</servlet-name>
+		<url-pattern>/v1/play</url-pattern>
+	</servlet-mapping>
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

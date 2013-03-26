@@ -1,12 +1,12 @@
-package com.voyagegames.java.logic3d.models.tests;
+package com.voyagegames.logic3d.models.tests;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.voyagegames.java.logic3d.models.Index;
-import com.voyagegames.java.logic3d.models.PieceIndex;
-import com.voyagegames.java.logic3d.models.Player;
+import com.voyagegames.logic3d.models.Index;
+import com.voyagegames.logic3d.models.PieceIndex;
+import com.voyagegames.logic3d.models.Player;
 
 public class PieceIndexTest {
 

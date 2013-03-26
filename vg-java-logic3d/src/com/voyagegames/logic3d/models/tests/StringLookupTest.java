@@ -1,4 +1,4 @@
-package com.voyagegames.java.logic3d.models.tests;
+package com.voyagegames.logic3d.models.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,8 +9,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.voyagegames.java.logic3d.models.ActionResult;
-import com.voyagegames.java.logic3d.models.StringLookup;
+import com.voyagegames.logic3d.models.ActionResult;
+import com.voyagegames.logic3d.models.StringLookup;
 
 public class StringLookupTest {
 	

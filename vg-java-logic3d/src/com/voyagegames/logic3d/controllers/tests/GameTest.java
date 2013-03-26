@@ -1,4 +1,4 @@
-package com.voyagegames.java.logic3d.controllers.tests;
+package com.voyagegames.logic3d.controllers.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,16 +9,16 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.voyagegames.java.logic3d.controllers.Game;
-import com.voyagegames.java.logic3d.models.ActionResult;
-import com.voyagegames.java.logic3d.models.Common;
-import com.voyagegames.java.logic3d.models.GameCondition;
-import com.voyagegames.java.logic3d.models.GameConfig;
-import com.voyagegames.java.logic3d.models.GameState;
-import com.voyagegames.java.logic3d.models.Index;
-import com.voyagegames.java.logic3d.models.PieceIndex;
-import com.voyagegames.java.logic3d.models.Player;
-import com.voyagegames.java.logic3d.models.StringLookup;
+import com.voyagegames.logic3d.controllers.Game;
+import com.voyagegames.logic3d.models.ActionResult;
+import com.voyagegames.logic3d.models.Common;
+import com.voyagegames.logic3d.models.GameCondition;
+import com.voyagegames.logic3d.models.GameConfig;
+import com.voyagegames.logic3d.models.GameState;
+import com.voyagegames.logic3d.models.Index;
+import com.voyagegames.logic3d.models.PieceIndex;
+import com.voyagegames.logic3d.models.Player;
+import com.voyagegames.logic3d.models.StringLookup;
 
 public class GameTest {
 	

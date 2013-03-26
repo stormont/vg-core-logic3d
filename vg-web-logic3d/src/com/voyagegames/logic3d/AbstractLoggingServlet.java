@@ -1,8 +1,11 @@
 package com.voyagegames.logic3d;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 
 import com.voyagegames.logic3d.core.Common.LogLevel;
 import com.voyagegames.logic3d.core.ILogger;
@@ -64,6 +67,42 @@ public abstract class AbstractLoggingServlet extends HttpServlet implements ILog
 		}
 
 		e.printStackTrace();
+	}
+	
+	public void failureResponse(
+			final HttpServletResponse resp,
+			final int responseCode,
+			final String tag,
+			final String errorMsg) {
+		try {
+			final PrintWriter out = resp.getWriter();
+			resp.setStatus(responseCode);
+	        out.print(errorMsg);
+		} catch (final IOException e) {
+			logLevel = LogLevel.ERROR;
+			log(tag, e.getMessage(), e);
+		}
+		
+		logLevel = LogLevel.WARNING;
+		log(tag, errorMsg);
+	}
+	
+	public void serverError(
+			final HttpServletResponse resp,
+			final String tag,
+			final String errorMsg,
+			final Exception exc) {
+		logLevel = LogLevel.ERROR;
+		log(tag, errorMsg, exc);
+		
+		try {
+			final PrintWriter out = resp.getWriter();
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	        out.print("Server error");
+		} catch (final IOException e) {
+			logLevel = LogLevel.ERROR;
+			log(tag, e.getMessage(), e);
+		}
 	}
 	
 }

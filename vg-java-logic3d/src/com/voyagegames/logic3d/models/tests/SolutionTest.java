@@ -1,4 +1,4 @@
-package com.voyagegames.java.logic3d.models.tests;
+package com.voyagegames.logic3d.models.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.voyagegames.java.logic3d.models.Index;
-import com.voyagegames.java.logic3d.models.Player;
-import com.voyagegames.java.logic3d.models.Solution;
+import com.voyagegames.logic3d.models.Index;
+import com.voyagegames.logic3d.models.Player;
+import com.voyagegames.logic3d.models.Solution;
 
 public class SolutionTest {
 

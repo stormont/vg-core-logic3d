@@ -1,4 +1,4 @@
-package com.voyagegames.java.logic3d.controllers;
+package com.voyagegames.logic3d;
 
 import java.security.SecureRandom;
 
