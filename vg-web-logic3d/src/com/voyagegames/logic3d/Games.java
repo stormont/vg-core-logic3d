@@ -130,6 +130,32 @@ public class Games {
 		datastore.put(game);
 	}
 	
+	public static String getPlayer1(final Entity game) {
+		return (String)game.getProperty(PLAYER_1_FIELD);
+	}
+	
+	public static String getPlayer2(final Entity game) {
+		return (String)game.getProperty(PLAYER_2_FIELD);
+	}
+	
+	public static GameConfig getConfig(final Entity game) {
+		return (GameConfig)game.getProperty(CONFIG_FIELD);
+	}
+	
+	public static boolean getCompleted(final Entity game) {
+		return (Boolean)game.getProperty(COMPLETED_FIELD);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<PieceIndex> getPieces(final Entity game) {
+		return (List<PieceIndex>)game.getProperty(PIECES_FIELD);
+	}
+	
+	public static String getTurn(final Entity game) {
+		return (String)game.getProperty(TURN_FIELD);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public static String buildJsonSummary(final Entity game) {
 		final long id = game.getKey().getId();
 		final Date lastPlay = (Date)game.getProperty(LAST_PLAY_FIELD);
@@ -137,6 +163,7 @@ public class Games {
 		final String player2 = (String)game.getProperty(PLAYER_2_FIELD);
 		final boolean completed = (Boolean)game.getProperty(COMPLETED_FIELD);
 		final String turn = (String)game.getProperty(TURN_FIELD);
+		final List<PieceIndex> pieces = (List<PieceIndex>)game.getProperty(PIECES_FIELD);
 		final StringBuilder sb = new StringBuilder();
 		
 		sb.append("{");
@@ -146,7 +173,25 @@ public class Games {
 		sb.append(",\"player2\":\"" + player2 + "\"");
 		sb.append(",\"completed\":" + completed);
 		sb.append(",\"turn\":" + turn);
-		sb.append("}");
+		sb.append(",\"pieces\":[");
+		
+		for (int i = 0; i < pieces.size(); ++i) {
+			final PieceIndex pi = pieces.get(i);
+			final StringBuilder psb = new StringBuilder();
+			
+			psb.append("{\"player\":" + pi.player.ordinal());
+			psb.append("{\"x\":" + pi.index.x);
+			psb.append("{\"y\":" + pi.index.y);
+			psb.append("{\"z\":" + pi.index.z);
+			psb.append("}");
+			sb.append(psb.toString());
+			
+			if (i < pieces.size() - 1) {
+				sb.append(",");
+			}
+		}
+		
+		sb.append("]}");
 		return sb.toString();
 	}
 	

@@ -58,6 +58,14 @@
 		<servlet-name>Play</servlet-name>
 		<url-pattern>/v1/play</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>Solution</servlet-name>
+		<servlet-class>com.voyagegames.logic3d.SolutionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Solution</servlet-name>
+		<url-pattern>/v1/solution</url-pattern>
+	</servlet-mapping>
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

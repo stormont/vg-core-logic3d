@@ -1,6 +1,7 @@
 package com.voyagegames.logic3d;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,6 @@ public class StartServlet extends AbstractLoggingServlet {
 	private static final String TAG = StartServlet.class.getName();
 	private static final int NUM_PLAYERS = 2;
 	private static final int MAX_SOLUTION_SIZE = com.voyagegames.logic3d.models.Common.SolutionSize * 2;
-	private static final String LANGUAGE = "en";
 	
 	public void doGet(final HttpServletRequest req, final HttpServletResponse resp)
 			throws IOException {
@@ -68,7 +68,7 @@ public class StartServlet extends AbstractLoggingServlet {
 				return;
 		    }
 			
-		    final String language = LANGUAGE;
+		    final String language = "en";
 		    final StringLookup strings = Common.getStringLookup(language);
 		    
 		    if (strings == null) {
@@ -104,9 +104,11 @@ public class StartServlet extends AbstractLoggingServlet {
 				failureResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, TAG, "Failed to start game");
 				return;
 		    }
-		    
-			// TODO Return game ID and state of play
-			failureResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, TAG, "Not implemented");
+
+			final PrintWriter out = resp.getWriter();
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.setContentType("application/json");
+	        out.print(Games.buildJsonSummary(result));
 		} catch (final Exception e) {
 			serverError(resp, TAG, PATH + " failed", e);
 		}
