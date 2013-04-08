@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.appengine.api.datastore.Entity;
 import com.voyagegames.logic3d.controllers.Game;
 import com.voyagegames.logic3d.core.Common;
 import com.voyagegames.logic3d.core.Common.LogLevel;
@@ -24,7 +23,7 @@ public class StartServlet extends AbstractLoggingServlet {
 	private static final int NUM_PLAYERS = 2;
 	private static final int MAX_SOLUTION_SIZE = com.voyagegames.logic3d.models.Common.SolutionSize * 2;
 	
-	public void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+	public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
 			throws IOException {
 		try {
 			logLevel = LogLevel.INFO;
@@ -56,12 +55,15 @@ public class StartServlet extends AbstractLoggingServlet {
 		    final HttpSession session = req.getSession();
 		    final String user = (String)session.getAttribute("user");
 		    
-		    if (!player1.equals(user)) {
+		    if (!player1.equalsIgnoreCase(user)) {
 				failureResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, TAG, "User " + player1 + " is not logged in");
 				return;
 		    }
+
+    		logLevel = LogLevel.INFO;
+			log(TAG, "User " + player1 + " requested game creation with " + player2 + " of size " + size);
 		    
-		    final List<Entity> gamesInProgress = Games.getGamesInProgress(player1, player2);
+		    final List<GameModel> gamesInProgress = Games.getGamesInProgress(player1, player2);
 		    
 		    if (gamesInProgress.size() > 0) {
 				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Game is already in progress");
@@ -98,7 +100,7 @@ public class StartServlet extends AbstractLoggingServlet {
 	    		return;
 		    }
 		    
-		    final Entity result = Games.startGame(player1, player2, config, playerTurn);
+		    final GameModel result = Games.startGame(player1, player2, config, playerTurn);
 		    
 		    if (result == null) {
 				failureResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, TAG, "Failed to start game");

@@ -19,22 +19,22 @@ public class Game {
 			throw new IllegalStateException("Game has already completed");
 		}
 		
-		if (pieceIndex.player != gameState.playerTurn()) {
+		if (pieceIndex.player() != gameState.playerTurn()) {
 			throw new IllegalArgumentException("It is Player " + gameState.playerTurn().toString() + "'s turn");
 		}
 		
-		final int location = pieceIndex.index.toArrayLocation(gameState.config.size);
+		final int location = pieceIndex.index().toArrayLocation(gameState.config.size);
 		
-		if (gameState.pieces.get(location).player != Player.None) {
+		if (gameState.pieces.get(location).player() != Player.None) {
 			throw new IllegalArgumentException("Piece has already been placed at this index (" +
-					pieceIndex.index.x + "," +
-					pieceIndex.index.y + "," +
-					pieceIndex.index.z + ")");
+					pieceIndex.index().x + "," +
+					pieceIndex.index().y + "," +
+					pieceIndex.index().z + ")");
 		}
 		
 		gameState.pieces.set(location, pieceIndex);
 		
-		final int playerIndex = pieceIndex.player.ordinal();
+		final int playerIndex = pieceIndex.player().ordinal();
 		
 		if (playerIndex == gameState.config.numPlayers) {
 			gameState.setPlayerTurn(Player.One);

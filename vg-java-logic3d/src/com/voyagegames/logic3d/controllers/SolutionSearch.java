@@ -13,11 +13,11 @@ public class SolutionSearch {
 	
 	public static Solution checkForSolution(final List<PieceIndex> pieces, final int gameSize) {
 		for (final PieceIndex pieceIndex : pieces) {
-			if (pieceIndex.player == Player.None) {
+			if (pieceIndex.player() == Player.None) {
 				continue;
 			}
 			
-			final List<List<Index>> indices = solutionIndicesForIndex(pieceIndex.index, gameSize);
+			final List<List<Index>> indices = solutionIndicesForIndex(pieceIndex.index(), gameSize);
 			
 			for (final List<Index> list : indices) {
 				if (list.size() < Common.SolutionSize) {
@@ -29,14 +29,14 @@ public class SolutionSearch {
 				for (final Index index : list) {
 					final int location = index.toArrayLocation(gameSize);
 					
-					if (pieces.get(location).player != pieceIndex.player) {
+					if (pieces.get(location).player() != pieceIndex.player()) {
 						solved = false;
 						break;
 					}
 				}
 				
 				if (solved) {
-					return new Solution(list, pieceIndex.player);
+					return new Solution(list, pieceIndex.player());
 				}
 			}
 		}

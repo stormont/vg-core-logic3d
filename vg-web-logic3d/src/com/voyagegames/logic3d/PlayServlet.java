@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.appengine.api.datastore.Entity;
 import com.voyagegames.logic3d.controllers.Game;
 import com.voyagegames.logic3d.core.Common;
 import com.voyagegames.logic3d.core.Common.LogLevel;
@@ -26,7 +25,7 @@ public class PlayServlet extends AbstractLoggingServlet {
 	private static final String PATH = "/v1/play";
 	private static final String TAG = PlayServlet.class.getName();
 	
-	public void doGet(final HttpServletRequest req, final HttpServletResponse resp)
+	public void doPost(final HttpServletRequest req, final HttpServletResponse resp)
 			throws IOException {
 		try {
 			logLevel = LogLevel.INFO;
@@ -70,28 +69,31 @@ public class PlayServlet extends AbstractLoggingServlet {
 		    final HttpSession session = req.getSession();
 		    final String user = (String)session.getAttribute("user");
 		    
-		    if (!player.equals(user)) {
+		    if (!player.equalsIgnoreCase(user)) {
 				failureResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, TAG, "User " + player + " is not logged in");
 				return;
 		    }
+
+    		logLevel = LogLevel.INFO;
+			log(TAG, "User " + player + " requested play for game " + gameID);
 		    
-		    final List<Entity> gamesInProgress = Games.getGamesInProgress(player);
+		    final List<GameModel> gamesInProgress = Games.getGamesInProgress(player);
 		    
-		    Entity game = null;
+		    GameModel game = null;
 		    
-		    for (final Entity e : gamesInProgress) {
-		    	if (e.getKey().getId() == gameID) {
+		    for (final GameModel e : gamesInProgress) {
+		    	if (e.id() == gameID) {
 		    		game = e;
 		    		break;
 		    	}
 		    }
 		    
 		    if (game == null) {
-				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Game does not exist");
+				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Game does not exist or has been completed");
 				return;
 		    }
 		    
-		    final GameConfig config = Games.getConfig(game);
+		    final GameConfig config = game.config();
 			
 			if (
 					x < 0 || x >= config.size ||
@@ -105,18 +107,18 @@ public class PlayServlet extends AbstractLoggingServlet {
 				return;
 			}
 			
-			if (!Games.getTurn(game).equals(player)) {
+			if (!game.turn().equalsIgnoreCase(player)) {
 				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Not player's turn: " + player);
 				return;
 			}
 			
-			final List<PieceIndex> pieces = Games.getPieces(game);
+			final List<PieceIndex> pieces = game.pieces();
 			
 			for (final PieceIndex pi : pieces) {
 				if (
-						pi.index.x == x &&
-						pi.index.y == y &&
-						pi.index.z == z) {
+						pi.index().x == x &&
+						pi.index().y == y &&
+						pi.index().z == z) {
 					failureResponse(
 							resp,
 							HttpServletResponse.SC_BAD_REQUEST,
@@ -124,12 +126,6 @@ public class PlayServlet extends AbstractLoggingServlet {
 							"Index already occupied: " + xStr + ", " + yStr + ", " + zStr);
 					return;
 				}
-			}
-			
-			if (Games.getPlayer1(game).equals(player)) {
-				pieces.add(new PieceIndex(new Index(x, y, z), Player.One));
-			} else {
-				pieces.add(new PieceIndex(new Index(x, y, z), Player.Two));
 			}
 			
 		    final String language = "en";
@@ -147,16 +143,22 @@ public class PlayServlet extends AbstractLoggingServlet {
 		    final GameState gameState = new GameState(config, strings);
 		    final Game gameSnapshot = new Game(gameState);
 
-			try {
-			    for (final PieceIndex pi : pieces) {
-			    	gameSnapshot.setPiece(pi);
-			    }
-			} catch (final IllegalStateException e) {
-				serverError(resp, TAG, "Game play failed to check solution", e);
-				return;
+			for (final PieceIndex pi : pieces) {
+				gameState.setPlayerTurn(pi.player());
+				gameSnapshot.setPiece(pi);
 			}
 			
-			Games.setPieces(game, pieces);
+			PieceIndex newPiece = null;
+			
+			if (game.player1().equalsIgnoreCase(game.turn())) {
+				newPiece = new PieceIndex(new Index(x, y, z), Player.One);
+			} else {
+				newPiece = new PieceIndex(new Index(x, y, z), Player.Two);
+			}
+			
+			gameState.setPlayerTurn(newPiece.player());
+			gameSnapshot.setPiece(newPiece);
+			Games.addPiece(game, newPiece);
 			
 			if (gameSnapshot.gameState.gameCondition() == GameCondition.Completed) {
 				Games.completeGame(game);

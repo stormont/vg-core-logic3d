@@ -14,8 +14,8 @@ public class PieceIndexTest {
 	public void testPieceIndex_successful() {
 		final Index index = new Index(1,2,3);
 		final PieceIndex pieceIndex = new PieceIndex(index, Player.One);
-		assertTrue(pieceIndex.index == index);
-		assertTrue(pieceIndex.player == Player.One);
+		assertTrue(pieceIndex.index() == index);
+		assertTrue(pieceIndex.player() == Player.One);
 	}
 
 }

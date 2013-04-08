@@ -1,7 +1,13 @@
 package com.voyagegames.logic3d.models;
 
-public class GameConfig {
+import java.io.Serializable;
+
+public class GameConfig implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7772546748160144629L;
 	public final int size;
 	public final int numPlayers;
 	

@@ -1,7 +1,13 @@
 package com.voyagegames.logic3d.models;
 
-public class Index {
+import java.io.Serializable;
+
+public class Index implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2892122643903202692L;
 	public final int x;
 	public final int y;
 	public final int z;

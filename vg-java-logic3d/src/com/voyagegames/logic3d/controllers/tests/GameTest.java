@@ -45,11 +45,11 @@ public class GameTest {
 	public void testSetPiece_successful() {
 		final Game game = new Game(gameState);
 		final PieceIndex pieceIndex = new PieceIndex(new Index(1,2,3), Player.One);
-		final int location = pieceIndex.index.toArrayLocation(config.size);
+		final int location = pieceIndex.index().toArrayLocation(config.size);
 
-		assertTrue(gameState.pieces.get(location).player == Player.None);
+		assertTrue(gameState.pieces.get(location).player() == Player.None);
 		game.setPiece(pieceIndex);
-		assertTrue(gameState.pieces.get(location).player == Player.One);
+		assertTrue(gameState.pieces.get(location).player() == Player.One);
 	}
 
 	@Test

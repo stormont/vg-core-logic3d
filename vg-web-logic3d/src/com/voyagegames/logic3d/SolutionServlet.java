@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.appengine.api.datastore.Entity;
 import com.voyagegames.logic3d.controllers.SolutionSearch;
 import com.voyagegames.logic3d.core.Common;
 import com.voyagegames.logic3d.core.Common.LogLevel;
@@ -27,7 +26,7 @@ public class SolutionServlet extends AbstractLoggingServlet {
 			throws IOException {
 		try {
 			logLevel = LogLevel.INFO;
-			log(TAG, PATH + " POST");
+			log(TAG, PATH + " GET");
 
 			final String player = req.getParameter("p");
 			final String gameStr = req.getParameter("g");
@@ -54,12 +53,15 @@ public class SolutionServlet extends AbstractLoggingServlet {
 				return;
 		    }
 		    
-		    final List<Entity> gamesInProgress = Games.getGames(player);
+    		logLevel = LogLevel.INFO;
+			log(TAG, "User " + player + " requested solution to " + gameID);
 		    
-		    Entity game = null;
+		    final List<GameModel> gamesInProgress = Games.getGames(player);
 		    
-		    for (final Entity e : gamesInProgress) {
-		    	if (e.getKey().getId() == gameID) {
+		    GameModel game = null;
+		    
+		    for (final GameModel e : gamesInProgress) {
+		    	if (e.id() == gameID) {
 		    		game = e;
 		    		break;
 		    	}
@@ -70,13 +72,13 @@ public class SolutionServlet extends AbstractLoggingServlet {
 				return;
 		    }
 		    
-		    if (!Games.getCompleted(game)) {
+		    if (!game.completed()) {
 				failureResponse(resp, HttpServletResponse.SC_BAD_REQUEST, TAG, "Game is still in progress");
 				return;
 		    }
 
-		    final GameConfig config = Games.getConfig(game);
-			final List<PieceIndex> pieces = Games.getPieces(game);
+		    final GameConfig config = game.config();
+			final List<PieceIndex> pieces = game.pieces();
 			final Solution solution = SolutionSearch.checkForSolution(pieces, config.size);
 		    
 		    if (solution == null) {

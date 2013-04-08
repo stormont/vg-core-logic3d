@@ -53,10 +53,10 @@ public class GameStateTest {
 			for (int j = 0; j < config.size; ++j) {
 				for (int k = 0; k < config.size; ++k) {
 					final PieceIndex pieceIndex = game.pieces.get((i * config.size * config.size) + (j * config.size) + k);
-					assertTrue(pieceIndex.index.x == i);
-					assertTrue(pieceIndex.index.y == j);
-					assertTrue(pieceIndex.index.z == k);
-					assertTrue(pieceIndex.player == Player.None);
+					assertTrue(pieceIndex.index().x == i);
+					assertTrue(pieceIndex.index().y == j);
+					assertTrue(pieceIndex.index().z == k);
+					assertTrue(pieceIndex.player() == Player.None);
 				}
 			}
 		}

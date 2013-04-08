@@ -33,7 +33,7 @@ public class FriendServlet extends AbstractLoggingServlet {
 		    final HttpSession session = req.getSession();
 		    final String user = (String)session.getAttribute("user");
 		    
-		    if (!name.equals(user)) {
+		    if (!name.equalsIgnoreCase(user)) {
 				failureResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, TAG, "User " + name + " is not logged in");
 				return;
 		    }
@@ -66,7 +66,7 @@ public class FriendServlet extends AbstractLoggingServlet {
 		    final HttpSession session = req.getSession();
 		    final String user = (String)session.getAttribute("user");
 		    
-		    if (!name.equals(user)) {
+		    if (!name.equalsIgnoreCase(user)) {
 				failureResponse(resp, HttpServletResponse.SC_UNAUTHORIZED, TAG, "User " + name + " is not logged in");
 				return;
 		    }
