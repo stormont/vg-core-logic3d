@@ -63,7 +63,7 @@ public class GamePieceShaderSet extends ShaderSet {
 				// pointing in the same direction then it will get max illumination.
 				+ "   float diffuse = max(dot(v_Normal, lightVector), 0.1);              \n"
 				// Add attenuation. 
-				+ "   diffuse = diffuse * (1.0 / (1.0 + (0.05 * distance * distance)));  \n"
+				+ "   diffuse = diffuse * (1.0 / (1.0 + (0.02 * distance * distance)));  \n"
 				// Multiply the color by the diffuse illumination level to get final output color.
 				+ "   gl_FragColor = v_Color * diffuse;                                  \n"
 				+ "}                                                                     \n";	

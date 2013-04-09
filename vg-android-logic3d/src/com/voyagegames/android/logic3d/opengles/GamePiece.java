@@ -15,13 +15,23 @@ public abstract class GamePiece {
     private int[] mVertexBufferObjects;
     private GamePieceShaderSet mShaderSet;
     private Vector3D mPosition;
+    private Position mPositionIndex;
 
     public GamePiece(final Context context) {
     	mPosition = new Vector3D(0f, 0f, 0f);
+    	mPositionIndex = new Position(0, 0, 0);
     }
     
     public void setPosition(final Vector3D position) {
     	mPosition = position;
+    }
+    
+    public void setPositionIndex(final Position position) {
+    	mPositionIndex = position;
+    }
+    
+    public Position positionIndex() {
+    	return mPositionIndex;
     }
     
     public void onSurfaceChanged(final GamePieceShaderSet shaderSet) {
