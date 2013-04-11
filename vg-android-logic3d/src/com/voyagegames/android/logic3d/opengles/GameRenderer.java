@@ -18,6 +18,7 @@ import com.voyagegames.core.android.opengles.modules.Light;
 import com.voyagegames.core.android.opengles.modules.LookAt;
 import com.voyagegames.core.android.opengles.modules.OrbitCamera;
 import com.voyagegames.core.android.opengles.modules.Vector3D;
+import com.voyagegames.logic3d.models.Player;
 
 public class GameRenderer implements Renderer, ITouchObserver {
 	
@@ -50,18 +51,13 @@ public class GameRenderer implements Renderer, ITouchObserver {
     private void initEntities() {
         final float offset = SPACING * (GAME_SIZE / 2) - (SPACING / 2.0f);
     	
-    	GamePiece gamePiece = new GreenGamePiece(mContext);
-    	gamePiece.setPosition(new Vector3D(-offset, -offset, -offset));
-    	gamePiece.setPositionIndex(new Position(0, 0, 0));
-    	mGamePieces.add(gamePiece);
-    	
-    	gamePiece = new RedGamePiece(mContext);
-    	gamePiece.setPosition(new Vector3D(SPACING - offset, -offset, -offset));
-    	gamePiece.setPositionIndex(new Position(1, 0, 0));
-    	mGamePieces.add(gamePiece);
+    	setGamePiece(Player.One, new Position(0,0,0));
+    	setGamePiece(Player.Two, new Position(1,0,0));
+        
+        GamePiece gamePiece = null;
     	
     	for (int i = 0; i < GAME_SIZE; ++i) {
-    		for (int j = 0; j < GAME_SIZE; ++j) {
+    		for (int j = 0; j < 1; ++j) {
     			for (int k = 0; k < GAME_SIZE; ++k) {
     		    	gamePiece = new GreyGamePiece(mContext);
     		    	gamePiece.setPosition(new Vector3D(SPACING * i - offset, SPACING * j - offset, SPACING * k - offset));
@@ -70,28 +66,63 @@ public class GameRenderer implements Renderer, ITouchObserver {
     			}
     		}
     	}
-    	
+    }
+    
+    public boolean setGamePiece(final Player player, final Position position) {
     	for (final GamePiece gp : mGamePieces) {
     		final Position gpPosition = gp.positionIndex();
     		
-    		GamePiece match = null;
-    		
-    		for (final GamePiece pgp : mPlaceholderGamePieces) {
-    			final Position pgpPosition = pgp.positionIndex();
-    			
-    			if (
-    					gpPosition.x == pgpPosition.x &&
-    					gpPosition.y == pgpPosition.y &&
-    					gpPosition.z == pgpPosition.z) {
-    				match = pgp;
-    				break;
-    			}
-    		}
-    		
-    		if (match != null) {
-    			mPlaceholderGamePieces.remove(match);
+    		if (gpPosition.x == position.x && gpPosition.y == position.y && gpPosition.z == position.z) {
+    			return false;
     		}
     	}
+    	
+        final float offset = SPACING * (GAME_SIZE / 2) - (SPACING / 2.0f);
+    	
+    	GamePiece gamePiece = null;
+    	
+    	switch (player) {
+    	case One:
+    		gamePiece = new RedGamePiece(mContext);
+    		break;
+    	case Two:
+    		gamePiece = new GreenGamePiece(mContext);
+    		break;
+    	default:
+    		return false;
+    	}
+    	
+    	gamePiece.setPosition(
+    			new Vector3D(
+    					(SPACING * position.x) - offset,
+    					(SPACING * position.y) - offset,
+    					(SPACING * position.z) - offset));
+    	gamePiece.setPositionIndex(position);
+    	mGamePieces.add(gamePiece);
+
+    	for (final GamePiece gp : mPlaceholderGamePieces) {
+    		final Position gpPosition = gp.positionIndex();
+    		
+    		if (gpPosition.x == position.x && gpPosition.y == position.y && gpPosition.z == position.z) {
+    			mPlaceholderGamePieces.remove(gp);
+    			break;
+    		}
+    	}
+    	
+    	if (position.y < (GAME_SIZE - 1)) {
+    		final Position placeholderPosition = new Position(position.x, position.y + 1, position.z);
+    		
+    		gamePiece = new GreyGamePiece(mContext);
+        	gamePiece.setPosition(
+        			new Vector3D(
+        					(SPACING * placeholderPosition.x) - offset,
+        					(SPACING * placeholderPosition.y) - offset,
+        					(SPACING * placeholderPosition.z) - offset));
+        	gamePiece.setPositionIndex(placeholderPosition);
+        	mPlaceholderGamePieces.add(gamePiece);
+    	}
+    	
+    	return true;
     }
     
 	@Override
